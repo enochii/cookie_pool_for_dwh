@@ -1,4 +1,4 @@
-### Cookies Pool For Amazon
+# Cookies Pool For Amazon
 
 这是为数仓项目写的一个简单的cookies池，任务是爬取**亚马逊的25w条电影的数据**。在数仓的项目中用到的反爬策略有：
 
@@ -10,7 +10,7 @@
 
 此外，我也觉得这部分是比较独立的一个模块，所以改改代码抽出一个仓库纪念下这两天的辛苦劳动hhh。
 
-#### Before Running（我知道你不会跑）
+### Before Running（我知道你不会跑）
 
 本地配置redis数据库，包括分别存储`product_id`（要爬取的电影的ID）和cookies的数据库。在`config.py`中进行配置：
 
@@ -40,7 +40,7 @@ def get_header():
 
 PS：你不搞IP代理和headers说不定也可以拿到页面--
 
-#### 目录结构
+### 目录结构
 
 `config.py`：数据库配置
 
@@ -58,7 +58,7 @@ PS：你不搞IP代理和headers说不定也可以拿到页面--
 
 > 以下截取自个人博客嘻嘻
 
-#### cookies池
+### cookies池
 
 借鉴[proxy_pool]( https://github.com/jhao104/proxy_pool )，我决定用本地的Redis充当存放cookies的地方。proxy_pool的逻辑大概就是爬完代理IP，然后扔进数据库里，再开一个RESTful的接口去供外部提供代理IP。考虑到数据库一般是在本地，所以我是用`CookiePool`类封装了redis的接口，向外提供cookies的插入、更新、删除等操作。
 
@@ -91,7 +91,7 @@ sp-cdn : "L5Z9:CN"
 我斗胆做了一下猜测，`session-id`是一个可以标识cookies的字段（所以我用它作为数据库cookies表的key）。当不带cookies且请求成功时，把这个cookies扔进cookies池。
 
 ```python
- @staticmethod
+ 	@staticmethod
     def cache_cookies(cookiedict):
         cookies_pool.get_all()
         cookies_pool.put(cookiedict['session-id'], cookiedict)
@@ -103,7 +103,7 @@ sp-cdn : "L5Z9:CN"
 
 - 返回一些我认为的无关紧要的字段（前面的是返回的cookies，后面是发过去的cookies）
 
-  ![format1](img\1.png)
+  ![format1](img/1.png)
 
   ```shell
   ubid-main 133-3832639-2346543 
@@ -113,7 +113,7 @@ sp-cdn : "L5Z9:CN"
 
 - 返回新的`session-id`，也就是和你request中带的`session-id`
 
-  ![session-id](img\2.png)
+  ![session-id](img/2.png)
 
 想想一个正常的浏览器和server进行交互，客户端发cookies，接cookies然后更新，所以对于上述的两种情况：
 
@@ -144,7 +144,7 @@ sp-cdn : "L5Z9:CN"
 
 
 
-##### cookies的淘汰机制
+#### cookies的淘汰机制
 
 正常猜想，cookies是会过期的，所以需要有一个简单的淘汰机制。这里是在爬取的时候维护一个字典，记录一个cookies**连续**失败请求的次数，当超过`Max_Cookies_Cnt`次时，会把这个cookies从数据库中删除。这里一开始我的淘汰机制比较宽松，一方面是觉得cookies来之不易，另一方面是请求失败事实上不一定是cookies的锅（代理IP、网络情况之类）。
 
