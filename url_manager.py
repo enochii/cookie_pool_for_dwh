@@ -17,15 +17,16 @@ class URLManager(object):
         self.extracted_ids = 'extractedID'
 
         self.conn = Redis(connection_pool=BlockingConnectionPool(host=host, port=port, db=db))
-        self.data = self.conn.smembers(self.origin_ids)
+        # self.data = self.conn.smembers(self.origin_ids)
 
     def pop(self) -> str:
-        raw_id = self.data.pop()
+        # raw_id = self.data.pop()
+        raw_id = self.conn.spop(self.origin_ids)
         if raw_id is None:
             return None
 
         rid = raw_id.decode('utf-8')
-        self.conn.srem(self.origin_ids, rid)
+        # self.conn.srem(self.origin_ids, rid)
 
         return rid
 

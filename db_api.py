@@ -57,12 +57,13 @@ class CookiesPool(object):
         self.conn.hdel(self.name, session_id)
 
     def get_all(self):
-        if self.cache is None:
-            raw_items = self.conn.hgetall(self.name)
-            self.cache = []
-            # print(raw_items)
-            for val in raw_items.values():
-                self.cache.append(val.decode('utf8'))
+        # if self.cache is None:
+        raw_items = self.conn.hgetall(self.name)
+        self.cache = []
+        # print(raw_items)
+        for val in raw_items.values():
+            self.cache.append(val.decode('utf8'))
+
         return self.cache
 
     def get_random_cookie(self):

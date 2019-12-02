@@ -20,7 +20,7 @@ def get_header():
 class Crawler(object):
     # 某个页面最大的尝试次数
     Max_URL_Retry = 10
-    Max_Cookie_Fail = 2
+    Max_Cookie_Fail = 15
     # 记录某个cookie失败次数，如果超过限制次数进行删除？
     Fail_Cnt = {}
 
